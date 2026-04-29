@@ -18,11 +18,6 @@
 		{
 			"binding": "DB",
 			"database_name": "prf-db",
-			"database_id": "YOUR_REAL_DATABASE_ID_HERE"
-		},
-		{
-			"binding": "prf_db",
-			"database_name": "prf-db",
 			"database_id": "f8052911-ecd0-4f31-837c-3d79d92afec3"
 		}
 	],
