@@ -1,0 +1,96 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Predictive Reorder Forecasting (PRF) API",
+    "description": "An intelligent, statistical API for predicting product exhaustion and reorder timing using the Exponential Moving Average (EMA) algorithm on Cloudflare's edge infrastructure.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://prf-api.your-subdomain.workers.dev",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/v1/log-order": {
+      "post": {
+        "summary": "Log a purchase and update prediction pattern",
+        "operationId": "logOrder",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "string", "example": "user_123" },
+                  "item_id": { "type": "string", "example": "milk" },
+                  "quantity": { "type": "number", "example": 2 },
+                  "household_size": { "type": "integer", "example": 2 },
+                  "unit": { "type": "string", "example": "liter" }
+                },
+                "required": ["user_id", "item_id", "quantity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "next_prediction_days": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/predict": {
+      "get": {
+        "summary": "Get predicted exhaustion date for an item",
+        "operationId": "getPrediction",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "item_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": { "type": "string" },
+                    "expected_exhaustion_date": { "type": "string", "format": "date" },
+                    "days_remaining": { "type": "integer" },
+                    "confidence_level": { "type": "string" },
+                    "trigger_notification": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
